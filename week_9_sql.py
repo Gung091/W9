@@ -65,13 +65,7 @@ WHERE variable =  'new postings'
 
 con.execute(query_1).df()
 
-"""Self-Practicing
----
-Query all the data pairs (date, US,JP) with variable="total postings", 自行練習將滿足條件 variable="total postings" 資料 (date, US,JP) 取出
 
-Streamlit Artifact
----
-"""
 
 import streamlit as st
 import altair as alt
@@ -87,21 +81,7 @@ Countries=list(con.execute(query).df().columns)[2:]
 
 con.execute(query).df()
 
-"""Notice
----
-Streamlit artifact is availed for web-service, 主要是用來發展雲端程式; this means it would only work while the server is up and worked without error, 換句話說必須具備伺服器系統程式正常啟動才可以運作. If you have install a completed python environment, (for instance, Anaconda Jupyter, VS code + Python", 如果你已經安裝完整的 Python 環境，例如 Anaconda Jupyter 或者 VS code + Python, you can activate streamlit artifact, app.py, in console, 可以在文字介面中利用下列方式啟動雲端程式測試:
-```shell
-streamlit run app.py
-```
-and test by the IP address: 
-```
-localhost:8501
-```
 
-Code Explanation
----
-Two single-select options, one for "variable", and the other for "country" (multiple-selection), 雲端程式包含兩個選項，一個選擇資料型態，一個選擇國家（複選).
-"""
 
 st.subheader('Filters')
 
@@ -120,73 +100,6 @@ with col1:
 with col2: 
     country = st.selectbox('Country',Countries)
 
-"""Full Code, app.py
----
-```
-import pandas as pd
-import streamlit as st
-
-import altair as alt
-import duckdb
-
-con = duckdb.connect(database='Job.db', read_only=True) 
-
-# Countries
-query='''
-   SELECT * 
-   FROM job
-'''
-Countries=list(con.execute(query).df().columns)[2:]
-
-
-st.subheader('Investingation')
-
-col1, col2 = st.columns(2)
-
-with col1:
-    query='''
-            SELECT 
-                 DISTINCT variable
-            From job        
-            ORDER BY variable       
-          '''
-
-    kinds=con.execute(query).df()
-    kind = st.selectbox('Kind of Statistics',kinds)
-with col2: 
-    country = st.selectbox('Country',Countries)
-    
-
-result_df = con.execute('''
-    SELECT 
-        *
-    FROM Job 
-    WHERE variable=?
-    ''', [kind]).df()
-
-chart = alt.Chart(result_df).mark_circle().encode(
-    x = 'date',
-    y = country,
-    #color = 'carrier'
-).interactive()
-st.altair_chart(chart, theme="streamlit", use_container_width=True)
-    
-```
-
-Finally
----
-1. create a folder, named "streamlit-SQL", 新增一個目錄，命名為 "streamlit-SQL"，
-2. copy `app.py, Job.db`, into this folder, 將檔案  `app.py, Job.db` 拷貝到目錄中
-3. also create a file, requirements.txt, which includes packages required in artifact, 並且新增一個檔案，requirements.txt，裡面包含雲端程式所需要的函式庫，如下:
-```
-dockdb
-altair
-```
-4. create new github and push files into repo, 新增給他資源庫，並將上述檔案上傳;
-5. sign in streamlit official to create artifact，到 streamlit 官方網站設定遠端程式. 
-
-[Streamlit Artifact](https://cchuang2009-streamlit-sql-app-68vvn2.streamlit.app/)
-"""
 
 #  !pip install duckdb-engine sqlalchemy
 
@@ -201,17 +114,6 @@ con = duckdb.connect(database='Job.duckdb')
 data_df = pd.read_sql("SELECT * FROM job where variable='total postings'", con,parse_dates=['date'])
 data_df
 
-"""Measurement of Similarity of Time-series data
----
-In the csv data, https://raw.githubusercontent.com/cchuang2009/streamlit-SQL/main/job.csv
-how to measure the similarity of time series among ['US','AU','CA','DE','FR','GB','IE','JP'] columns
-
-
-
-1. Dynamic Time Warping (DTW): DTW is a popular technique for measuring the similarity between two time series, even if they have different lengths and speed. It works by finding the optimal alignment between two time series that minimizes the difference between them. DTW can be used to measure the similarity between each pair of columns in the csv data.
-
-2. Pearson Correlation Coefficient: Pearson correlation measures the linear correlation between two time series. It ranges from -1 to 1, where -1 means perfect negative correlation, 0 means no correlation, and 1 means perfect positive correlation. You can compute the Pearson correlation coefficient between each pair of columns in the csv data.
-"""
 
 
 from dtaidistance import dtw
