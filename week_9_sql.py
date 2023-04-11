@@ -20,8 +20,6 @@ for i in range(len(countries)):
 
 df_world.reset_index(inplace=True,drop=True)
 
-df_world
-
 
 import sqlite3
 import sqlalchemy as sa
