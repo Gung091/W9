@@ -2,3 +2,4 @@ duckdb
 altair
 matplotlib
 seaborn
+plotly
